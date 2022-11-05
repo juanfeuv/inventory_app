@@ -7,7 +7,7 @@ import Chip from '@mui/material/Chip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import ReactTable from "react-table";
 import Swal from 'sweetalert2';
 import Tooltip from '@mui/material/Tooltip';
@@ -15,10 +15,14 @@ import EditIcon from '@mui/icons-material/Edit';
 
 import callMethod from '../../utils/callMethod';
 import FormOrg from './FormOrg';
+import UserInfo from '../../contexts/UserInfo';
 
 const CURSOR_POINTER = { cursor: 'pointer' };
 
 const Home = () => {
+  const { user } = useContext(UserInfo);
+  const isAdmin = useMemo(() => !!user?.profile?.isAdmin, [user]);
+
   const [list, setList] = useState([]);
   const [open, setOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
@@ -153,14 +157,18 @@ const Home = () => {
           </Button>
           &nbsp;
           <Tooltip title="Edit">
-            <IconButton aria-label="Edit" color='warning' onClick={() => editItem(row.original)}>
-              <EditIcon />
-            </IconButton>
+            <span>
+              <IconButton aria-label="Edit" color='warning' onClick={() => editItem(row.original)} disabled={!isAdmin}>
+                <EditIcon />
+              </IconButton>
+            </span>
           </Tooltip>
           <Tooltip title="Delete">
-            <IconButton aria-label="Delete" color='error' onClick={() => removeItem(row.value)}>
-              <DeleteIcon />
-            </IconButton>
+            <span>
+              <IconButton aria-label="Delete" color='error' onClick={() => removeItem(row.value)} disabled={!isAdmin}>
+                <DeleteIcon />
+              </IconButton>
+            </span>
           </Tooltip>
         </>
       ),
@@ -176,7 +184,7 @@ const Home = () => {
         <Grid item xs={12} md={6} style={{ textAlign: 'right' }}>
           <Button variant="contained" onClick={loadList} color="primary">Refresh</Button>
           &nbsp;
-          <Button variant="contained" onClick={handleOpen} color="success">New</Button>
+          <Button variant="contained" onClick={handleOpen} color="success" disabled={!isAdmin}>New</Button>
         </Grid>
       </Grid>
       <br />
