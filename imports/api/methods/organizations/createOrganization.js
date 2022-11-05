@@ -32,6 +32,15 @@ export const validate = (form) => {
   }
 };
 
+/**
+ * Function for creating a new organization
+ * @param {Object} form
+ * @param {String} form.name Name of the organization
+ * @param {String} form.address Address of the organization
+ * @param {String} form.nit NIT of the organization
+ * @param {String} form.tel Cellphone of the organization
+ * @returns {Object}
+ */
 const createOrganization = (form) => {
   const { error } = validate(form);
 
