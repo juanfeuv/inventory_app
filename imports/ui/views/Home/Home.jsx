@@ -14,6 +14,7 @@ import Tooltip from '@mui/material/Tooltip';
 import EditIcon from '@mui/icons-material/Edit';
 
 import callMethod from '../../utils/callMethod';
+import floatFormat from '../../utils/floatFormat';
 import FormOrg from './FormOrg';
 import UserInfo from '../../contexts/UserInfo';
 
@@ -126,9 +127,9 @@ const Home = () => {
       accessor: 'nit',
       style: { textAlign: 'center' },
       Cell: (row) => (
-        <Tooltip title={row.value}>
+        <Tooltip title={floatFormat(row.value)}>
           <span style={CURSOR_POINTER}>
-            {row.value}
+            {floatFormat(row.value)}
           </span>
         </Tooltip>
       ),

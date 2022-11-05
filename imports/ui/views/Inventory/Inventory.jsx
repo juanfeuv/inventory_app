@@ -14,7 +14,10 @@ import ReactTable from "react-table";
 import Swal from 'sweetalert2';
 import Tooltip from '@mui/material/Tooltip';
 
+import { generatePdfContent, downloadPdf } from './helper';
+
 import callMethod from '../../utils/callMethod';
+import floatFormat from '../../utils/floatFormat';
 import FormItem from './FormItem';
 import UserInfo from '../../contexts/UserInfo';
 
@@ -99,6 +102,15 @@ const Inventory = () => {
     }
   };
 
+  const getPdf = () => {
+    const docDefinition = generatePdfContent({
+      list,
+      orgName: org?.name || '',
+    });
+
+    downloadPdf({ docDefinition, nit: org?.nit });
+  };
+
   useEffect(() => {
     getOrg();
     loadList();
@@ -134,9 +146,9 @@ const Inventory = () => {
       accessor: 'price',
       style: { textAlign: 'center' },
       Cell: (row) => (
-        <Tooltip title={row.value}>
+        <Tooltip title={`$${floatFormat(row.value)}`}>
           <span style={CURSOR_POINTER}>
-            {row.value}
+            {`$${floatFormat(row.value)}`}
           </span>
         </Tooltip>
       ),
@@ -176,7 +188,7 @@ const Inventory = () => {
           <Chip color='primary' label={`Organization: ${org?.name || ''}`} />
         </Grid>
         <Grid item xs={12} md={6} style={{ textAlign: 'right' }}>
-          <Button variant="contained" onClick={() => { }} color="warning">PDF</Button>
+          <Button variant="contained" onClick={getPdf} color="warning">PDF</Button>
           &nbsp;
           <Button variant="contained" onClick={loadList} color="primary">Refresh</Button>
           &nbsp;
