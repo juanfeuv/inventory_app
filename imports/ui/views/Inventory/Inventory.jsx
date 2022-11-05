@@ -3,15 +3,16 @@ import 'react-table/react-table.css'
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 
-import Swal from 'sweetalert2';
-import React, { useState, useEffect } from "react";
-import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-import ReactTable from "react-table";
-import Tooltip from '@mui/material/Tooltip';
+import Chip from '@mui/material/Chip';
 import DeleteIcon from '@mui/icons-material/Delete';
-import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import React, { useState, useEffect } from "react";
+import ReactTable from "react-table";
+import Swal from 'sweetalert2';
+import Tooltip from '@mui/material/Tooltip';
 
 import callMethod from '../../utils/callMethod';
 import FormItem from './FormItem';
@@ -24,6 +25,7 @@ const Inventory = () => {
   const [list, setList] = useState([]);
   const [open, setOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
+  const [org, setOrg] = useState(null);
 
   const handleOpen = () => {
     setOpen(true);
@@ -31,6 +33,11 @@ const Inventory = () => {
       isEdit: false,
       data: {},
     });
+  };
+
+  const getOrg = () => {
+    callMethod('getOrganizationById', { _id: id })
+      .then(({ res }) => setOrg(res?.org));
   };
 
   const editItem = (info) => {
@@ -90,6 +97,7 @@ const Inventory = () => {
   };
 
   useEffect(() => {
+    getOrg();
     loadList();
   }, []);
 
@@ -156,7 +164,9 @@ const Inventory = () => {
     <div style={{ padding: '10px' }}>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={12} md={6}>
-          {/* <Button variant="contained">Filtros de búsqueda</Button> */}
+          <Chip color='primary' label={`${list.length} row(s)`} />
+          &nbsp;
+          <Chip color='primary' label={`Organization: ${org?.name || ''}`} />
         </Grid>
         <Grid item xs={12} md={6} style={{ textAlign: 'right' }}>
           <Button variant="contained" onClick={() => { }} color="warning">PDF</Button>

@@ -2,14 +2,15 @@ import 'react-table/react-table.css'
 
 import { toast } from 'react-toastify';
 
-import Swal from 'sweetalert2';
-import React, { useState, useEffect } from "react";
-import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-import ReactTable from "react-table";
-import Tooltip from '@mui/material/Tooltip';
+import Chip from '@mui/material/Chip';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
+import React, { useState, useEffect } from "react";
+import ReactTable from "react-table";
+import Swal from 'sweetalert2';
+import Tooltip from '@mui/material/Tooltip';
 import EditIcon from '@mui/icons-material/Edit';
 
 import callMethod from '../../utils/callMethod';
@@ -170,7 +171,7 @@ const Home = () => {
     <div style={{ padding: '10px' }}>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid item xs={12} md={6}>
-          {/* <Button variant="contained">Filtros de búsqueda</Button> */}
+          <Chip color='primary' label={`${list.length} row(s)`} />
         </Grid>
         <Grid item xs={12} md={6} style={{ textAlign: 'right' }}>
           <Button variant="contained" onClick={loadList} color="primary">Refresh</Button>
