@@ -8,6 +8,7 @@ import { toast, ToastContainer } from 'react-toastify';
 
 import AppBar from './components/AppBar'
 import Home from './views/Home/Home';
+import Inventory from './views/Inventory/Inventory';
 import Login from './views/Login';
 
 const isAuth = () => !!Meteor.userId();
@@ -53,7 +54,7 @@ const CustomRoutes = () => (
         }
       >
         <Route path='/' element={<Home />} />
-        <Route path='/inventory' element={<Home />} />
+        <Route path='/inventory/:id' element={<Inventory />} />
       </Route>
       <Route
         path='/login'

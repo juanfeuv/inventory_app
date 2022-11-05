@@ -10,6 +10,10 @@ const INDEXES = [
     options: {
       unique: true,
     }
+  }, {
+    index: {
+      updatedAt: -1,
+    }
   }
 ];
 

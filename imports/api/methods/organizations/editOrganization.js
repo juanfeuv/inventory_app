@@ -5,6 +5,9 @@ import { Meteor } from 'meteor/meteor';
 import Organizations from '../../collections/organizations';
 
 const schema = Joi.object({
+  _id: Joi
+    .string()
+    .required(),
   name: Joi
     .string()
     .min(1)
@@ -13,10 +16,6 @@ const schema = Joi.object({
   address: Joi
     .string()
     .min(1)
-    .required(),
-  nit: Joi
-    .string()
-    .length(9)
     .required(),
   tel: Joi
     .string()
@@ -32,25 +31,24 @@ export const validate = (form) => {
   }
 };
 
-const createOrganization = (form) => {
+const editOrganization = (form) => {
   const { error } = validate(form);
 
   if (error) {
     throw new Meteor.Error(error.message);
   }
 
-  const org = Organizations.findOne({ nit: form.nit });
-
-  if (org) {
-    throw new Meteor.Error('Organization NIT already exists!');
-  }
+  const { _id, ...rest } = form
 
   const currentDate = new Date();
 
-  Organizations.insert({
-    ...form,
-    createdAt: currentDate,
-    updatedAt: currentDate,
+  Organizations.update({
+    _id,
+  }, {
+    $set: {
+      ...rest,
+      updatedAt: currentDate,
+    }
   });
 
   return {
@@ -59,4 +57,4 @@ const createOrganization = (form) => {
   };
 };
 
-Meteor.methods({ createOrganization });
+Meteor.methods({ editOrganization });

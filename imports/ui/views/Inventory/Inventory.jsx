@@ -1,6 +1,7 @@
 import 'react-table/react-table.css'
 
 import { toast } from 'react-toastify';
+import { useParams } from 'react-router-dom';
 
 import Swal from 'sweetalert2';
 import React, { useState, useEffect } from "react";
@@ -13,11 +14,13 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 
 import callMethod from '../../utils/callMethod';
-import FormOrg from './FormOrg';
+import FormItem from './FormItem';
 
 const CURSOR_POINTER = { cursor: 'pointer' };
 
-const Home = () => {
+const Inventory = () => {
+  const { id } = useParams();
+
   const [list, setList] = useState([]);
   const [open, setOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
@@ -32,24 +35,23 @@ const Home = () => {
 
   const editItem = (info) => {
     const {
-      _id, name, address, nit, tel
+      _id, item, quantity, price
     } = info;
 
     setCurrentItem({
       isEdit: true,
       data: {
         _id,
-        name,
-        address,
-        nit,
-        tel,
+        item,
+        quantity,
+        price
       },
     });
     setOpen(true);
   };
 
   const loadList = () => {
-    callMethod('getOrganizations')
+    callMethod('getInventory', { organizationId: id })
       .then(({ res, err }) => {
         if (err) {
           toast.error(err)
@@ -64,7 +66,7 @@ const Home = () => {
   const removeItem = async (_id) => {
     const result = await Swal.fire({
       title: 'Delete item',
-      text: 'Do you want to continue? The invetory related will be removed',
+      text: 'Do you want to continue?',
       icon: 'warning',
       confirmButtonText: 'Yes, delete it!',
       cancelButtonText: 'No, cancel!',
@@ -74,7 +76,7 @@ const Home = () => {
     });
 
     if (result.isConfirmed) {
-      const { err } = await callMethod('removeOrganization', { _id });
+      const { err } = await callMethod('removeInventory', { _id });
 
       if (err) {
         toast.error(err);
@@ -83,7 +85,7 @@ const Home = () => {
       }
 
       loadList();
-      toast.success('Organization successfuly deleted!');
+      toast.success('Item successfuly deleted!');
     }
   };
 
@@ -93,8 +95,8 @@ const Home = () => {
 
   const Columns = [
     {
-      Header: "Name",
-      accessor: 'name',
+      Header: "Item",
+      accessor: 'item',
       style: { textAlign: 'center' },
       Cell: (row) => (
         <Tooltip title={row.value}>
@@ -105,8 +107,8 @@ const Home = () => {
       ),
     },
     {
-      Header: "Address",
-      accessor: 'address',
+      Header: "Quantity",
+      accessor: 'quantity',
       style: { textAlign: 'center' },
       Cell: (row) => (
         <Tooltip title={row.value}>
@@ -117,20 +119,8 @@ const Home = () => {
       ),
     },
     {
-      Header: "NIT",
-      accessor: 'nit',
-      style: { textAlign: 'center' },
-      Cell: (row) => (
-        <Tooltip title={row.value}>
-          <span style={CURSOR_POINTER}>
-            {row.value}
-          </span>
-        </Tooltip>
-      ),
-    },
-    {
-      Header: "Cellphone",
-      accessor: 'tel',
+      Header: "Price",
+      accessor: 'price',
       style: { textAlign: 'center' },
       Cell: (row) => (
         <Tooltip title={row.value}>
@@ -147,10 +137,6 @@ const Home = () => {
       sortable: false,
       Cell: (row) => (
         <>
-          <Button variant="contained" color="success" size="small" href={`/inventory/${row.value}`}>
-            Inventory
-          </Button>
-          &nbsp;
           <Tooltip title="Edit">
             <IconButton aria-label="Edit" color='warning' onClick={() => editItem(row.original)}>
               <EditIcon />
@@ -173,6 +159,8 @@ const Home = () => {
           {/* <Button variant="contained">Filtros de búsqueda</Button> */}
         </Grid>
         <Grid item xs={12} md={6} style={{ textAlign: 'right' }}>
+          <Button variant="contained" onClick={() => { }} color="warning">PDF</Button>
+          &nbsp;
           <Button variant="contained" onClick={loadList} color="primary">Refresh</Button>
           &nbsp;
           <Button variant="contained" onClick={handleOpen} color="success">New</Button>
@@ -190,14 +178,15 @@ const Home = () => {
           />
         </Grid>
       </Grid>
-      <FormOrg
+      <FormItem
         open={open}
         setOpen={setOpen}
         loadList={loadList}
         currentItem={currentItem}
+        organizationId={id}
       />
     </div>
   );
 }
 
-export default Home;
+export default Inventory;

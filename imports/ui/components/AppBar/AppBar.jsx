@@ -65,7 +65,7 @@ export default function ButtonAppBar() {
         <Box sx={{ flexGrow: 1 }}>
           <AppBar position="static">
             <Toolbar>
-              <IconButton
+              {/* <IconButton
                 size="large"
                 edge="start"
                 color="inherit"
@@ -91,7 +91,7 @@ export default function ButtonAppBar() {
               >
                 <MenuItem onClick={() => navigate('/')}>Home</MenuItem>
                 <MenuItem onClick={handleClose}>My account</MenuItem>
-              </Menu>
+              </Menu> */}
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Hello <b>{_.capitalize(userData?.user?.username)}</b>!
               </Typography>

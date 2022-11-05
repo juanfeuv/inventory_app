@@ -25,13 +25,12 @@ const style = {
 };
 
 const DEFAULT_FORM = {
-  name: '',
-  address: '',
-  nit: '',
-  tel: '',
+  item: '',
+  quantity: '',
+  price: '',
 }
 
-const FormOrg = ({ open, setOpen, loadList, currentItem }) => {
+const FormItem = ({ open, setOpen, loadList, currentItem, organizationId }) => {
   const [form, setForm] = useState(DEFAULT_FORM);
 
   const isEdit = useMemo(() => !!currentItem?.isEdit, [currentItem]);
@@ -45,8 +44,8 @@ const FormOrg = ({ open, setOpen, loadList, currentItem }) => {
 
   const handleClose = () => setOpen(false);
 
-  const createOrg = async () => {
-    const { err } = await callMethod('createOrganization', form);
+  const createItem = async () => {
+    const { err } = await callMethod('createInventory', { ...form, organizationId });
 
     if (err) {
       toast.error(err);
@@ -56,17 +55,13 @@ const FormOrg = ({ open, setOpen, loadList, currentItem }) => {
 
     setOpen(false);
     loadList();
-    toast.success('Organization successfully created!');
+    toast.success('Item successfully created!');
   };
 
-  const updateOrg = async () => {
-    const { name, address, tel } = form;
-
-    const { err } = await callMethod('editOrganization', {
+  const updateItem = async () => {
+    const { err } = await callMethod('editInventory', {
+      ...form,
       _id: currentItem?.data?._id,
-      name,
-      address,
-      tel,
     });
 
     if (err) {
@@ -77,7 +72,7 @@ const FormOrg = ({ open, setOpen, loadList, currentItem }) => {
 
     setOpen(false);
     loadList();
-    toast.success('Organization successfully update!');
+    toast.success('Item successfully update!');
   };
 
   useEffect(() => {
@@ -107,63 +102,56 @@ const FormOrg = ({ open, setOpen, loadList, currentItem }) => {
       <Fade in={open}>
         <Box sx={style}>
           <Typography id="transition-modal-title" variant="h6" component="h2">
-            {isEdit ? 'Edit organization' : 'New organization'}
+            {isEdit ? 'Edit item' : 'New item'}
           </Typography>
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
-                label="Name"
+                label="Item"
                 variant="standard"
                 type="text"
                 fullWidth
                 required
-                name="name"
-                value={form?.name}
+                name="item"
+                value={form?.item}
                 onChange={handlechange}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="NIT"
+                label="Quantity"
                 variant="standard"
-                type="text"
+                type="number"
                 fullWidth
                 required
-                name="nit"
-                value={form?.nit}
-                disabled={isEdit}
+                name="quantity"
+                value={form?.quantity}
                 onChange={handlechange}
+                inputProps={{
+                  min: 0,
+                }}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Address"
+                label="Price"
                 variant="standard"
-                type="text"
+                type="number"
                 fullWidth
                 required
-                name="address"
-                value={form?.address}
+                name="price"
+                value={form?.price}
                 onChange={handlechange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Cellphone"
-                variant="standard"
-                type="tel"
-                fullWidth
-                required
-                name="tel"
-                value={form?.tel}
-                onChange={handlechange}
+                inputProps={{
+                  min: 0,
+                }}
               />
             </Grid>
             <Grid item xs={12} style={{ textAlign: 'right' }}>
               <Button
                 variant="contained"
                 color="success"
-                onClick={isEdit ? updateOrg : createOrg}
+                onClick={isEdit ? updateItem : createItem}
               >
                 {isEdit ? 'Edit' : 'Create'}
               </Button>
@@ -183,15 +171,16 @@ const FormOrg = ({ open, setOpen, loadList, currentItem }) => {
   );
 };
 
-FormOrg.propTypes = {
+FormItem.propTypes = {
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
   loadList: PropTypes.func.isRequired,
   currentItem: PropTypes.object,
+  organizationId: PropTypes.string.isRequired,
 };
 
-FormOrg.defaultProps = {
+FormItem.defaultProps = {
   currentItem: null,
 };
 
-export default FormOrg;
+export default FormItem;

@@ -2,25 +2,24 @@ import Joi from 'joi';
 
 import { Meteor } from 'meteor/meteor';
 
-import Organizations from '../../collections/organizations';
+import Inventory from '../../collections/inventory';
 
 const schema = Joi.object({
-  name: Joi
+  _id: Joi
+    .string()
+    .required(),
+  item: Joi
     .string()
     .min(1)
     .max(30)
     .required(),
-  address: Joi
-    .string()
+  quantity: Joi
+    .number()
     .min(1)
     .required(),
-  nit: Joi
-    .string()
-    .length(9)
-    .required(),
-  tel: Joi
-    .string()
-    .length(10)
+  price: Joi
+    .number()
+    .min(1)
     .required(),
 });
 
@@ -32,25 +31,24 @@ export const validate = (form) => {
   }
 };
 
-const createOrganization = (form) => {
+const editInventory = (form) => {
   const { error } = validate(form);
 
   if (error) {
     throw new Meteor.Error(error.message);
   }
 
-  const org = Organizations.findOne({ nit: form.nit });
-
-  if (org) {
-    throw new Meteor.Error('Organization NIT already exists!');
-  }
+  const { _id, ...rest } = form
 
   const currentDate = new Date();
 
-  Organizations.insert({
-    ...form,
-    createdAt: currentDate,
-    updatedAt: currentDate,
+  Inventory.update({
+    _id,
+  }, {
+    $set: {
+      ...rest,
+      updatedAt: currentDate,
+    }
   });
 
   return {
@@ -59,4 +57,4 @@ const createOrganization = (form) => {
   };
 };
 
-Meteor.methods({ createOrganization });
+Meteor.methods({ editInventory });
