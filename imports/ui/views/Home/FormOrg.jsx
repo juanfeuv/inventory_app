@@ -126,13 +126,16 @@ const FormOrg = ({ open, setOpen, loadList, currentItem }) => {
               <TextField
                 label="NIT"
                 variant="standard"
-                type="text"
+                type="number"
                 fullWidth
                 required
                 name="nit"
                 value={form?.nit}
                 disabled={isEdit}
                 onChange={handlechange}
+                inputProps={{
+                  min: 0
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -151,12 +154,15 @@ const FormOrg = ({ open, setOpen, loadList, currentItem }) => {
               <TextField
                 label="Cellphone"
                 variant="standard"
-                type="tel"
+                type="number"
                 fullWidth
                 required
                 name="tel"
                 value={form?.tel}
                 onChange={handlechange}
+                inputProps={{
+                  min: 0
+                }}
               />
             </Grid>
             <Grid item xs={12} style={{ textAlign: 'right' }}>
